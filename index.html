@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f8f9f6" />
+    <meta name="description" content="Turn a photo of a Sudoku puzzle into a solved, editable grid." />
+    <title>Gridwork — Sudoku solver</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar"><a class="brand" href="#"><span class="brand-mark">▦</span> grid<span class="brand-light">work</span></a><span class="top-note">SUDOKU, SORTED.</span></header>
+    <main>
+      <section class="intro"><div class="eyebrow"><span class="spark">✳</span> A little help with your daily nine</div><h1>From puzzle to <span>solved.</span></h1><p>Drop in a Sudoku photo. We’ll read the clues and fill in the rest.</p></section>
+      <div class="workspace">
+        <section class="panel photo-panel">
+          <div class="panel-head"><div><span class="step">01</span><h2>Your puzzle</h2></div><span class="subtle">IMAGE INPUT</span></div>
+          <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose a Sudoku image">
+            <input id="file-input" type="file" accept="image/*" hidden />
+            <div id="empty-state" class="empty-state"><div class="upload-icon">↑</div><strong>Drop a photo here</strong><span>or <label class="text-button" for="file-input">browse files</label></span><small>JPG, PNG or WEBP · up to 15 MB</small></div>
+            <div id="image-stage" class="image-stage" hidden><img id="source-image" alt="Uploaded Sudoku puzzle" draggable="false" /></div>
+          </div>
+          <div class="image-tools" id="image-tools" hidden><span class="hint">Gemini will find the Sudoku in the full photo.</span><button id="replace-button" class="quiet-button">Change image</button></div>
+          <div class="photo-footer"><span class="footer-hint">A clear, straight-on photo works best.</span><button id="read-button" class="primary-button" disabled>Read puzzle <span>→</span></button></div>
+          <div id="ocr-progress" class="progress-wrap" hidden><div class="progress-label"><span id="progress-text">Preparing image…</span><span id="progress-percent">0%</span></div><div class="progress-track"><span id="progress-bar"></span></div></div>
+        </section>
+        <section class="panel grid-panel">
+          <div class="panel-head"><div><span class="step">02</span><h2>Check & solve</h2></div><span class="subtle">YOUR GRID</span></div>
+          <p class="panel-desc">Check the clues, fix anything we misread, then solve.</p>
+          <div class="grid-wrap"><div id="sudoku-grid" class="sudoku-grid" role="grid" aria-label="Editable Sudoku grid"></div><div id="grid-empty" class="grid-empty"><div class="grid-glyph">▦</div><span>Your recognized clues<br />will appear here</span></div></div>
+          <div class="grid-actions"><button id="clear-button" class="quiet-button" disabled>Clear grid</button><div class="grid-action-buttons"><button id="analyze-button" class="secondary-button" disabled>Analyze steps</button><button id="solve-button" class="primary-button" disabled>Solve puzzle <span>→</span></button></div></div>
+          <div id="status" class="status" aria-live="polite"><span class="status-dot"></span><span>Upload a photo to get started.</span></div>
+          <details id="candidate-tools" class="candidate-tools">
+            <summary>Check where a number can go</summary>
+            <div class="candidate-controls">
+              <label>Number<select id="candidate-digit" aria-label="Number to analyze"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></label>
+              <label>Unit<select id="candidate-unit-type" aria-label="Sudoku unit"><option value="row">Row</option><option value="column">Column</option><option value="box" selected>3×3 box</option></select></label>
+              <label><span id="candidate-unit-label">Box</span><select id="candidate-unit-number" aria-label="Unit number"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option selected>7</option><option>8</option><option>9</option></select></label>
+              <button id="candidate-analyze" class="secondary-button" type="button">Find positions</button>
+            </div>
+            <div class="candidate-legend"><span><i class="legend-possible"></i>Possible</span><span><i class="legend-eliminated"></i>Eliminated</span><span><i class="legend-unique"></i>Only position</span></div>
+            <div id="candidate-report" class="candidate-report" aria-live="polite">
+              <p id="candidate-summary">Select a number and row, column, or box to inspect its legal positions.</p>
+              <p id="candidate-positions"></p><p id="candidate-eliminations"></p><p id="candidate-reason"></p>
+            </div>
+          </details>
+          <section id="analysis-panel" class="analysis-panel" hidden aria-live="polite">
+            <div class="analysis-heading"><div><h3>Solution walkthrough</h3><p>Singles first, then fewest-candidates-first backtracking if needed.</p></div><span id="analysis-count" class="analysis-count"></span></div>
+            <div class="analysis-step"><span id="analysis-technique" class="analysis-technique"></span><p id="analysis-text"></p></div>
+            <div class="analysis-controls"><button id="analysis-prev" class="quiet-button" disabled>← Previous move</button><button id="analysis-next" class="quiet-button">Next move →</button></div>
+          </section>
+          <div id="solution-actions" class="solution-actions" hidden><span><span class="solved-icon">✓</span> Puzzle solved</span><button id="reset-button" class="quiet-button">Try another</button></div>
+        </section>
+      </div>
+      <footer><span>Made for the moments when you’re one number away.</span><span class="footer-right">A SIMPLE SUDOKU SOLVER</span></footer>
+    </main>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
