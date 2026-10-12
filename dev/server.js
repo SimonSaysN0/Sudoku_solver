@@ -1,9 +1,9 @@
-const fs = require('node:fs');
+﻿const fs = require('node:fs');
 const http = require('node:http');
 const path = require('node:path');
-const ocrHandler = require('./api/ocr');
+const ocrHandler = require('../api/ocr');
 
-const root = __dirname;
+const root = path.resolve(__dirname, '..');
 const port = Number(process.env.PORT || 3000);
 const mimeTypes = {
   '.css': 'text/css; charset=utf-8',
